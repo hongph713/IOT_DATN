@@ -98,20 +98,20 @@ void loop()
     // Chuyển đổi giá trị ADC sang điện áp
     voltage = analogValue * (3.3 / 4095.0);  // ADC 12-bit
     // Tính toán nồng độ bụi (theo datasheet của Sharp)
-    pm = (voltage - 0.6) * 0.5 * 1000;  // đơn vị: µg/m³
-    if (pm < 0) pm = 0;
+    float sensor_pm = -4.875415 + ((voltage - 0.6) * 0.5 * 1000)* 0.993914 + temp * -0.027430 + humid * 0.01 ;  // đơn vị: µg/m³
+    if (sensor_pm < 0) sensor_pm = 0;
     Serial.print("ADC: ");
     Serial.print(analogValue);
     Serial.print(" | Voltage: ");
     Serial.print(voltage, 3);
     Serial.print(" V | Dust: ");
-    Serial.print(pm, 1);
+    Serial.print(sensor_pm, 1);
     Serial.println(" µg/m³");
 
     //Read temperature and humidity
-    humid = dht.readHumidity();
-    temp = dht.readTemperature(); // Mặc định là Celsius
-
+    humid = dht.readHumidity() * 0.979538 + 4.418143 ;
+    temp = dht.readTemperature() * 0.986333 + 3.032857; // Mặc định là Celsius
+    pm = -4.875415 + (0.993914 * sensor_pm) - (0.027430 * temp) + (0.01 * humid);
     // Kiểm tra lỗi
     if (isnan(humid) || isnan(temp)) {
       Serial.println(F("Failed to read from DHT sensor!"));
