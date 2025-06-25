@@ -98,7 +98,7 @@ void loop()
     // Chuyển đổi giá trị ADC sang điện áp
     voltage = analogValue * (3.3 / 4095.0);  // ADC 12-bit
     // Tính toán nồng độ bụi (theo datasheet của Sharp)
-    float sensor_pm = -4.875415 + ((voltage - 0.6) * 0.5 * 1000)* 0.993914 + temp * -0.027430 + humid * 0.01 ;  // đơn vị: µg/m³
+    float sensor_pm = (voltage - 0.6) * 0.5 * 1000);  // đơn vị: µg/m³
     if (sensor_pm < 0) sensor_pm = 0;
     Serial.print("ADC: ");
     Serial.print(analogValue);
